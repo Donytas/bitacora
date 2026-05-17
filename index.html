@@ -8,7 +8,7 @@
         :root {
             --ua-naranja: #ff7a00;
             --ua-naranja-hover: #e06b00;
-            --ua-naranja-light: rgba(255, 122, 0, 0.06); /* Fondo sutil para las viñetas */
+            --ua-naranja-light: rgba(255, 122, 0, 0.06);
             --ua-naranja-border: rgba(255, 122, 0, 0.2);
             --ua-azul-oscuro: #1e293b;
             --bg-principal: #f1f5f9;
@@ -36,7 +36,7 @@
             overflow: hidden;
         }
 
-        /* --- NAVBAR SUPERIOR UNIFICADO --- */
+        /* --- NAVBAR SUPERIOR --- */
         header {
             background-color: var(--bg-card);
             border-bottom: 2px solid var(--border-color);
@@ -90,7 +90,7 @@
             overflow: hidden;
         }
 
-        /* Columna Izquierda: VIÑETAS PERSONALIZADAS EN NARANJA */
+        /* Columna Izquierda: Viñetas Naranja */
         .sidebar-vinetas {
             width: 360px;
             background-color: var(--bg-card);
@@ -113,7 +113,6 @@
             opacity: 0.8;
         }
 
-        /* El cuadrito con temática naranja */
         .vineta-link {
             background-color: var(--ua-naranja-light);
             border: 1px solid var(--ua-naranja-border);
@@ -151,7 +150,6 @@
             transition: var(--transition);
         }
 
-        /* Hover dinámico e imponente en naranja */
         .vineta-link:hover {
             border-color: var(--ua-naranja);
             background-color: var(--ua-naranja);
@@ -159,20 +157,13 @@
             box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2);
         }
 
-        /* Al pasar el mouse, los textos internos cambian a blanco para contraste perfecto */
-        .vineta-link:hover .vineta-tag {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .vineta-link:hover h4 {
-            color: #ffffff;
-        }
-
+        .vineta-link:hover .vineta-tag,
+        .vineta-link:hover h4,
         .vineta-link:hover .vineta-action {
             color: #ffffff;
         }
 
-        /* Columna Derecha: Pantalla de Presentación Activa */
+        /* Columna Derecha: Carátula */
         .presentation-workspace {
             flex: 1;
             padding: 2rem 3rem;
@@ -182,7 +173,6 @@
             align-items: flex-start;
         }
 
-        /* Tarjeta de Carátula Formal */
         .caratula-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -223,7 +213,7 @@
             border-radius: 2px;
         }
 
-        /* Tabla de Datos del Alumno */
+        /* Tabla de Datos Informativos Integrada */
         .student-info-table {
             width: 100%;
             max-width: 600px;
@@ -236,6 +226,7 @@
             padding: 0.6rem 1rem;
             font-size: 1rem;
             border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
         }
 
         .student-info-table td.label {
@@ -249,7 +240,26 @@
             font-weight: 600;
         }
 
-        /* Contenedor del Video */
+        /* Lista de integrantes estilizada */
+        .integrantes-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .integrantes-list li {
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .integrantes-list li::before {
+            content: "🔸";
+            font-size: 0.8rem;
+        }
+
+        /* Contenedor de Video Fino */
         .video-presentacion-container {
             width: 100%;
             max-width: 600px;
@@ -275,16 +285,15 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        .video-frame-wrapper iframe {
+        .video-frame-wrapper video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: contain;
         }
 
-        /* Scrollbar Tuneada */
         .sidebar-vinetas::-webkit-scrollbar {
             width: 6px;
         }
@@ -334,25 +343,39 @@
                         <td class="value">Pensamiento Matemático</td>
                     </tr>
                     <tr>
-                        <td class="label">Estudiante:</td>
-                        <td class="value">Adonis Antonio Soria Navarro</td>
-                    </tr>
-                    <tr>
                         <td class="label">Especialidad:</td>
                         <td class="value">Ingeniería de Sistemas</td>
                     </tr>
                     <tr>
-                        <td class="label">Estructura:</td>
-                        <td class="value">16 Sesiones Académicas Completas</td>
+                        <td class="label">Integrantes:</td>
+                        <td class="value">
+                            <ul class="integrantes-list">
+                                <li>Adonis Antonio Soria Navarro</li>
+                                <li>MATHIAS SEBASTIÀN ANGUILAR MILLER</li>
+                                <li>OSCAR DAVID LIZARME VICTORIANO</li>
+                                <li>Lizandro Jesús González Cruz</li>
+                                <li>Said Mallma Navarro</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Profesor:</td>
+                        <td class="value">Yuli Novak Ormeño Torres</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Año Académico:</td>
+                        <td class="value">2026</td>
                     </tr>
                 </table>
-
-                <div class="video-presentacion-container">
-                    <h3>🎬 Video Introductorio del Portafolio:</h3>
-                    <div class="video-frame-wrapper">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-                    </div>
-                </div>
+<div class="video-presentacion-container">
+    <h3>🎬 Video de Presentación Grupal (Elección de Carrera Profesional):</h3>
+    <div class="video-frame-wrapper">
+        <video controls preload="metadata">
+            <source src="video_bienvenida.mp4" type="video/mp4">
+            Tu navegador no soporta video nativo.
+        </video>
+    </div>
+</div>
             </div>
         </main>
 
@@ -361,20 +384,20 @@
     <script>
         const titulosTemas = [
             "Lógica Proposicional",
-            "Números Reales e Intervalos",
-            "Razones y Proporciones",
-            "Porcentajes y Aplicaciones",
-            "Perímetros y Optimización",
-            "Áreas de Regiones Planas",
-            "Plano Cartesiano y Coordenadas",
+            "NÚMEROS REALES",
+            "LA LÓGICA DETRÁS DE LAS PROPORCIONES",
+            "PORCENTAJES",
+            "PERÍMETRO",
+            " COMPRENDER EL ESPACIO, CALCULAR EL MUNDO",
+            "PLANO CARTESIANO",
             "Evaluación Parcial Académica",
-            "Regla de Tres Simple y Compuesta",
-            "Ecuaciones de Primer Grado",
-            "Sistemas de Ecuaciones Lineales",
-            "Funciones Reales y Gráficas",
-            "Introducción a la Estadística",
-            "Medidas de Tendencia Central",
-            "Probabilidades y Eventos",
+            "Regla de Tres Simple",
+            "ECUACIONES LINEALES",
+            "SISTEMA DE ECUACIONES LINEALES",
+            "FUNCIONES LINEALES",
+            "FUNCIONES CUADRÁTICAS",
+            "ECUACIONES CUADRÁTICAS",
+            " PRUEBA ESCRITA",
             "Sustentación de Bitácora Final"
         ];
 
