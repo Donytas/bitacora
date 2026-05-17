@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora Audiovisual - Universidad Autónoma del Perú</title>
+    <style>
+        :root {
+            --ua-naranja: #ff7a00;
+            --ua-naranja-hover: #e06b00;
+            --ua-naranja-light: rgba(255, 122, 0, 0.06); /* Fondo sutil para las viñetas */
+            --ua-naranja-border: rgba(255, 122, 0, 0.2);
+            --ua-azul-oscuro: #1e293b;
+            --bg-principal: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- NAVBAR SUPERIOR UNIFICADO --- */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            padding: 0 2.5rem;
+            display: flex;
+            align-items: center;
+            height: 110px;
+            flex-shrink: 0;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .logo-autonoma {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--ua-azul-oscuro);
+            line-height: 1.2;
+        }
+
+        .header-title h1 span {
+            color: var(--ua-naranja);
+        }
+
+        .header-title p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 0.15rem;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL ASIMÉTRICO --- */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Columna Izquierda: VIÑETAS PERSONALIZADAS EN NARANJA */
+        .sidebar-vinetas {
+            width: 360px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ua-azul-oscuro);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            opacity: 0.8;
+        }
+
+        /* El cuadrito con temática naranja */
+        .vineta-link {
+            background-color: var(--ua-naranja-light);
+            border: 1px solid var(--ua-naranja-border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: var(--transition);
+        }
+
+        .vineta-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--ua-naranja);
+            transition: var(--transition);
+        }
+
+        .vineta-link h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ua-azul-oscuro);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: var(--transition);
+        }
+
+        .vineta-action {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--ua-naranja);
+            margin-top: 0.25rem;
+            transition: var(--transition);
+        }
+
+        /* Hover dinámico e imponente en naranja */
+        .vineta-link:hover {
+            border-color: var(--ua-naranja);
+            background-color: var(--ua-naranja);
+            transform: translateX(6px);
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2);
+        }
+
+        /* Al pasar el mouse, los textos internos cambian a blanco para contraste perfecto */
+        .vineta-link:hover .vineta-tag {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .vineta-link:hover h4 {
+            color: #ffffff;
+        }
+
+        .vineta-link:hover .vineta-action {
+            color: #ffffff;
+        }
+
+        /* Columna Derecha: Pantalla de Presentación Activa */
+        .presentation-workspace {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Tarjeta de Carátula Formal */
+        .caratula-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 850px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .caratula-logo {
+            height: 90px;
+            width: auto;
+        }
+
+        .caratula-card h2 {
+            font-size: 2rem;
+            color: var(--ua-azul-oscuro);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .caratula-card h2 span {
+            color: var(--ua-naranja);
+        }
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background-color: var(--ua-naranja);
+            border-radius: 2px;
+        }
+
+        /* Tabla de Datos del Alumno */
+        .student-info-table {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 0.5rem;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .student-info-table td {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .student-info-table td.label {
+            font-weight: 700;
+            color: var(--text-muted);
+            width: 30%;
+        }
+
+        .student-info-table td.value {
+            color: var(--ua-azul-oscuro);
+            font-weight: 600;
+        }
+
+        /* Contenedor del Video */
+        .video-presentacion-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .video-presentacion-container h3 {
+            font-size: 1.1rem;
+            color: var(--ua-azul-oscuro);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .video-frame-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background-color: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .video-frame-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Scrollbar Tuneada */
+        .sidebar-vinetas::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-vinetas::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 992px) {
+            header { height: auto; padding: 1.5rem; justify-content: center; }
+            .logo-box { flex-direction: column; text-align: center; }
+            .main-layout { flex-direction: column-reverse; }
+            .sidebar-vinetas { width: 100%; height: 300px; }
+            .presentation-workspace { padding: 1.5rem; }
+            .caratula-card { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-box">
+            <img src="Universidad-Autonoma-del-Peru-UA.jpg" alt="Logo UA" class="logo-autonoma">
+            <div class="header-title">
+                <h1>Bitácora Audiovisual // <span>Ingeniería</span></h1>
+                <p>Portafolio Técnico Digital - 16 Sesiones de Aprendizaje</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        
+        <nav class="sidebar-vinetas">
+            <div class="sidebar-title">Índice de Contenidos</div>
+            <div id="vinetas-container" style="display:contents;"></div>
+        </nav>
+
+        <main class="presentation-workspace">
+            <div class="caratula-card">
+                <img src="Universidad-Autonoma-del-Peru-UA.jpg" alt="Logo UA Central" class="caratula-logo">
+                <h2>PRESENTACIÓN DE BITÁCORA<br><span>PRODUCTO FINAL DIGITAL</span></h2>
+                <div class="divider"></div>
+                
+                <table class="student-info-table">
+                    <tr>
+                        <td class="label">Curso:</td>
+                        <td class="value">Pensamiento Matemático</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Estudiante:</td>
+                        <td class="value">Adonis Antonio Soria Navarro</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Especialidad:</td>
+                        <td class="value">Ingeniería de Sistemas</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Estructura:</td>
+                        <td class="value">16 Sesiones Académicas Completas</td>
+                    </tr>
+                </table>
+
+                <div class="video-presentacion-container">
+                    <h3>🎬 Video Introductorio del Portafolio:</h3>
+                    <div class="video-frame-wrapper">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        const titulosTemas = [
+            "Lógica Proposicional",
+            "Números Reales e Intervalos",
+            "Razones y Proporciones",
+            "Porcentajes y Aplicaciones",
+            "Perímetros y Optimización",
+            "Áreas de Regiones Planas",
+            "Plano Cartesiano y Coordenadas",
+            "Evaluación Parcial Académica",
+            "Regla de Tres Simple y Compuesta",
+            "Ecuaciones de Primer Grado",
+            "Sistemas de Ecuaciones Lineales",
+            "Funciones Reales y Gráficas",
+            "Introducción a la Estadística",
+            "Medidas de Tendencia Central",
+            "Probabilidades y Eventos",
+            "Sustentación de Bitácora Final"
+        ];
+
+        const vinetasContainer = document.getElementById('vinetas-container');
+
+        for (let i = 1; i <= 16; i++) {
+            const numFormateado = i < 10 ? '0' + i : i;
+            const titulo = titulosTemas[i-1] || `Sesión Académica ${numFormateado}`;
+            
+            const link = document.createElement('a');
+            link.className = 'vineta-link';
+            link.href = `tema${numFormateado}.html`;
+
+            link.innerHTML = `
+                <span class="vineta-tag">SESIÓN ${numFormateado}</span>
+                <h4>${titulo}</h4>
+                <div class="vineta-action">Abrir bitácora ➔</div>
+            `;
+            
+            vinetasContainer.appendChild(link);
+        }
+    </script>
+</body>
+</html>
