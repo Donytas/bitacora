@@ -173,11 +173,99 @@
             margin-top: 0.5rem;
         }
 
+        /* --- ESTILOS DEL MODAL INTERACTIVO CON MOVIMIENTO EN ZOOM --- */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 41, 59, 0.95);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .image-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-body {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            max-width: 100%;
+            max-height: 85vh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(1) translate(0px, 0px);
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            object-fit: contain;
+            cursor: zoom-in;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Estado con Mega Zoom y Cursor de Arrastre */
+        .modal-content.zoomed {
+            transform: scale(2.5);
+            cursor: grab;
+        }
+
+        .modal-content.zoomed:active {
+            cursor: grabbing;
+        }
+
+        /* Controles */
+        .modal-controls {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 10000;
+        }
+
+        .control-btn {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .control-btn:hover {
+            color: var(--ua-naranja);
+            transform: scale(1.1);
+        }
+
+        .zoom-icon {
+            font-size: 1.8rem;
+        }
+
         @media (max-width: 768px) {
             header { height: auto; padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
             .content-container { margin: 1.5rem auto; gap: 1.5rem; }
             .cuadro-anaranjado { padding: 1.5rem; }
             .gallery-container { grid-template-columns: 1fr; }
+            .modal-controls { top: 15px; right: 20px; gap: 1rem; }
+            .control-btn { font-size: 1.8rem; }
+            .zoom-icon { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -208,24 +296,183 @@
         <section class="cuadro-anaranjado">
             <h2>📸 Ejercicios Resueltos a Mano</h2>
             <div class="gallery-container">
-                <img src="foto1.jpg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
-                <img src="foto2.jpg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="tabla de la verdad o.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="tabla de la verdad J.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
             </div>
         </section>
 
         <section class="cuadro-anaranjado">
             <h2>📹 Video Explicativo (Guía 4 Min)</h2>
             <div class="video-wrapper">
-                <video 
-                    controls 
-                    preload="metadata" 
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">
-                    <source src="secion 1.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de video nativo.
-                </video>
+                <iframe 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 14px;" 
+                    src="https://www.youtube.com/embed/xFn-w6TtxJs?feature=share" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
         </section>
     </div>
+
+    <div class="image-modal" id="imageModal">
+        <div class="modal-controls">
+            <span class="control-btn zoom-icon" id="zoomBtn" title="Acercar / Alejar">🔍</span>
+            <span class="control-btn" id="closeModal" title="Cerrar Escena">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <img class="modal-content" id="modalImg" src="" alt="Imagen ampliada">
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeBtn = document.getElementById('closeModal');
+        const zoomBtn = document.getElementById('zoomBtn');
+        const imagenes = document.querySelectorAll('.foto-problema');
+
+        // Variables de estado del motor de física de arrastre
+        let isDragging = false;
+        let startX, startY;
+        let translateX = 0, translateY = 0;
+        let prevTranslateX = 0, prevTranslateY = 0;
+        let isMoving = false; 
+
+        // Actualiza la matriz de transformación CSS de la imagen
+        const updateTransform = (withTransition = true) => {
+            modalImg.style.transition = withTransition ? "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
+            if (modalImg.classList.contains('zoomed')) {
+                modalImg.style.transform = `scale(2.5) translate(${translateX}px, ${translateY}px)`;
+            } else {
+                modalImg.style.transform = `scale(1) translate(0px, 0px)`;
+            }
+        };
+
+        // Manejador del Click de Zoom Focalizado
+        modalImg.addEventListener('click', (e) => {
+            if (isMoving) return; 
+
+            if (!modalImg.classList.contains('zoomed')) {
+                const rect = modalImg.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                modalImg.style.transformOrigin = `${x}% ${y}%`;
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        // --- MOTOR DE ARRASTRE DE IMAGEN (MOUSE Y PANTALLAS TÁCTILES) ---
+        const startDrag = (clientX, clientY) => {
+            if (!modalImg.classList.contains('zoomed')) return;
+            isDragging = true;
+            isMoving = false;
+            startX = clientX - prevTranslateX;
+            startY = clientY - prevTranslateY;
+            modalImg.style.transition = "none";
+        };
+
+        const moveDrag = (clientX, clientY) => {
+            if (!isDragging) return;
+            isMoving = true;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform(false); 
+        };
+
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            prevTranslateX = translateX;
+            prevTranslateY = translateY;
+            setTimeout(() => { isMoving = false; }, 50);
+        };
+
+        // Eventos de Mouse tradicional
+        modalImg.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', stopDrag);
+        modalImg.addEventListener('mouseleave', stopDrag);
+
+        // Soporte de Arrastre para Smartphones (Responsive UX)
+        modalImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchend', stopDrag);
+
+        // Control del botón flotante de la lupa 
+        zoomBtn.addEventListener('click', () => {
+            if (!modalImg.classList.contains('zoomed')) {
+                modalImg.style.transformOrigin = 'center center';
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        // Inicialización y despliegue del modal al tocar una miniatura
+        imagenes.forEach(img => {
+            img.addEventListener('click', () => {
+                modalImg.style.transformOrigin = 'center center';
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                modal.classList.add('active');
+                modalImg.src = img.src;
+                modalImg.alt = img.alt;
+                document.body.style.overflow = 'hidden';
+                updateTransform(false);
+            });
+        });
+
+        const cerrarModal = () => {
+            modal.classList.remove('active');
+            modalImg.classList.remove('zoomed');
+            translateX = translateY = prevTranslateX = prevTranslateY = 0;
+            zoomBtn.innerText = "🔍";
+            updateTransform(false);
+            document.body.style.overflow = '';
+            setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+        };
+
+        closeBtn.addEventListener('click', cerrarModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === document.getElementById('modalBody')) {
+                cerrarModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('active') && e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+    </script>
 
 </body>
 </html>
