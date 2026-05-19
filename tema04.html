@@ -165,12 +165,14 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%;
+            padding-top: 56.25%; /* Mantiene proporción 16:9 para el cuadro */
             background-color: #000;
             border-radius: var(--radius);
             overflow: hidden;
             border: 1px solid var(--border-color);
             margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
         }
 
         /* --- ESTILOS DEL MODAL INTERACTIVO CON MOVIMIENTO EN ZOOM --- */
@@ -212,12 +214,11 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transform: scale(1) translate(0px, 0px);
             transform-origin: center center;
-            /* La transición se desactiva por JS al arrastrar para que sea reactivo al instante */
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             object-fit: contain;
             cursor: zoom-in;
             user-select: none;
-            -webkit-user-drag: none; /* Evita que el navegador intente arrastrar el archivo original */
+            -webkit-user-drag: none;
         }
 
         /* Estado con Mega Zoom y Cursor de Arrastre */
@@ -301,20 +302,21 @@
                 <img src="porcentaje D.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
                 <img src="porcentaje O.jpeg" alt="Problema Resuelto Parte 3" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
                 <img src="porcentaje S.jpeg" alt="Problema Resuelto Parte 4" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
-                <img src="foto1.jpg" alt="Problema Resuelto Parte 5" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="porcentaje J.jpeg" alt="Problema Resuelto Parte 5" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
             </div>
         </section>
 
         <section class="cuadro-anaranjado">
             <h2>📹 Video Explicativo (Guía 4 Min)</h2>
             <div class="video-wrapper">
-                <video 
-                    controls 
-                    preload="metadata" 
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">
-                    <source src="secion 3.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de video nativo.
-                </video>
+                <iframe 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 14px;" 
+                    src="https://www.youtube.com/embed/UK3BbTEBbwQ?feature=share" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
         </section>
     </div>
@@ -336,13 +338,12 @@
         const zoomBtn = document.getElementById('zoomBtn');
         const imagenes = document.querySelectorAll('.foto-problema');
 
-        // Variables de estado del motor de arrastre
         let isDragging = false;
         let startX, startY;
         let translateX = 0, translateY = 0;
         let prevTranslateX = 0, prevTranslateY = 0;
+        let isMoving = false; 
 
-        // Función central para actualizar la transformación en pantalla
         const updateTransform = (withTransition = true) => {
             modalImg.style.transition = withTransition ? "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
             if (modalImg.classList.contains('zoomed')) {
@@ -352,10 +353,8 @@
             }
         };
 
-        // Captura el clic en la imagen (Focaliza o Desactiva)
         modalImg.addEventListener('click', (e) => {
-            // Si el usuario estaba arrastrando la imagen, cancelamos la acción de clic de zoom
-            if (isDragging) return;
+            if (isMoving) return; 
 
             if (!modalImg.classList.contains('zoomed')) {
                 const rect = modalImg.getBoundingClientRect();
@@ -367,7 +366,6 @@
                 zoomBtn.innerText = "📉";
                 updateTransform(true);
             } else {
-                // Al quitar el zoom, reiniciamos las variables de posición
                 modalImg.classList.remove('zoomed');
                 translateX = translateY = prevTranslateX = prevTranslateY = 0;
                 zoomBtn.innerText = "🔍";
@@ -376,37 +374,51 @@
             }
         });
 
-        // --- SISTEMA DRAG & DROP (ARRANQUE, MOVIMIENTO Y FRENO) ---
-        modalImg.addEventListener('mousedown', (e) => {
+        const startDrag = (clientX, clientY) => {
             if (!modalImg.classList.contains('zoomed')) return;
             isDragging = true;
-            // Guardamos la posición inicial del puntero
-            startX = e.clientX - prevTranslateX * 2.5; 
-            startY = e.clientY - prevTranslateY * 2.5;
-            modalImg.style.transition = "none"; // Matamos la animación para que sea 1:1 en tiempo real
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            // Calculamos la distancia recorrida tomando en cuenta la escala
-            translateX = (e.clientX - startX) / 2.5;
-            translateY = (e.clientY - startY) / 2.5;
-            updateTransform(false); // Renderizado inmediato sin lag de transición
-        });
-
-        const stopDragging = () => {
-            if (!isDragging) return;
-            isDragging = false;
-            // Almacenamos el último punto para que el próximo arrastre empiece desde ahí
-            prevTranslateX = translateX;
-            prevTranslateY = translateY;
+            isMoving = false;
+            startX = clientX - prevTranslateX;
+            startY = clientY - prevTranslateY;
+            modalImg.style.transition = "none";
         };
 
-        window.addEventListener('mouseup', stopDragging);
-        modalImg.addEventListener('mouseleave', stopDragging);
+        const moveDrag = (clientX, clientY) => {
+            if (!isDragging) return;
+            isMoving = true;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform(false); 
+        };
 
-        // Control del botón flotante de la lupa (Punto neutro)
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            prevTranslateX = translateX;
+            prevTranslateY = translateY;
+            setTimeout(() => { isMoving = false; }, 50);
+        };
+
+        modalImg.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', stopDrag);
+        modalImg.addEventListener('mouseleave', stopDrag);
+
+        modalImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchend', stopDrag);
+
         zoomBtn.addEventListener('click', () => {
             if (!modalImg.classList.contains('zoomed')) {
                 modalImg.style.transformOrigin = 'center center';
@@ -422,7 +434,6 @@
             }
         });
 
-        // Despliegue del modal al dar clic a las miniaturas de los ejercicios
         imagenes.forEach(img => {
             img.addEventListener('click', () => {
                 modalImg.style.transformOrigin = 'center center';
