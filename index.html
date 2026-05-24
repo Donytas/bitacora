@@ -285,13 +285,13 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        .video-frame-wrapper video {
+        .video-frame-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            border: none;
         }
 
         .sidebar-vinetas::-webkit-scrollbar {
@@ -346,34 +346,39 @@
                         <td class="label">Especialidad:</td>
                         <td class="value">Ingeniería de Sistemas</td>
                     </tr>
-                    <<tr>
-<tr>
-                    <td class="label">Integrantes:</td>
-                    <td class="value">
-                        <div style="margin-bottom: 4px;">Soria Navarro, Adonis Antonio</div>
-                        <div style="margin-bottom: 4px;">Lizarme Victoriano, Oscar David</div>
-                        <div style="margin-bottom: 4px;">Aguilar Miller, Mathias Sebastián</div>
-                        <div style="margin-bottom: 4px;">Mallma Navarro, Said Stifler</div>
-                        <div>González Cruz, Lizandro Jesús</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">Profesor:</td>
-                    <td class="value">Yuli Novak Ormeño Torres</td>
-                </tr>
+                    <tr>
+                        <td class="label">Integrantes:</td>
+                        <td class="value">
+                            <ul class="integrantes-list">
+                                <li>Adonis Antonio Soria Navarro</li>
+                                <li>MATHIAS SEBASTIÁN AGUILAR MILLER</li>
+                                <li>OSCAR DAVID LIZARME VICTORIANO</li>
+                                <li>Lizandro Jesús González Cruz</li>
+                                <li>Said Mallma Navarro</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Profesor:</td>
+                        <td class="value">Yuli Novak Ormeño Torres</td>
+                    </tr>
+                    <tr>
                         <td class="label">Año Académico:</td>
                         <td class="value">2026</td>
                     </tr>
                 </table>
-<div class="video-presentacion-container">
-    <h3>🎬 Video de Presentación Grupal (Elección de Carrera Profesional):</h3>
-    <div class="video-frame-wrapper">
-        <video controls preload="metadata">
-            <source src="video_bienvenida.mp4" type="video/mp4">
-            Tu navegador no soporta video nativo.
-        </video>
-    </div>
-</div>
+
+                <div class="video-presentacion-container">
+                    <h3>🎬 Video de Presentación Grupal (Elección de Carrera Profesional):</h3>
+                    <div class="video-frame-wrapper">
+                        <iframe 
+                            src="https://www.youtube.com/embed/iAVz59oXomQ" 
+                            title="YouTube video player" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
             </div>
         </main>
 
