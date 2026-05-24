@@ -303,19 +303,22 @@
                 <img src="numero D.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
                 <img src="numero O1.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
                 <img src="numero O2.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="numero J1.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="numero J2.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
             </div>
         </section>
 
         <section class="cuadro-anaranjado">
             <h2>📹 Video Explicativo (Guía 4 Min)</h2>
             <div class="video-wrapper">
-                <video 
-                    controls 
-                    preload="metadata" 
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">
-                    <source src="secion 3.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de video nativo.
-                </video>
+                <iframe 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 14px;" 
+                    src="https://www.youtube.com/embed/yc_5yiZQeGY" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
         </section>
     </div>
@@ -341,6 +344,7 @@
         let startX, startY;
         let translateX = 0, translateY = 0;
         let prevTranslateX = 0, prevTranslateY = 0;
+        let isMoving = false; 
 
         const updateTransform = (withTransition = true) => {
             modalImg.style.transition = withTransition ? "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
@@ -352,7 +356,7 @@
         };
 
         modalImg.addEventListener('click', (e) => {
-            if (isDragging) return;
+            if (isMoving) return; 
 
             if (!modalImg.classList.contains('zoomed')) {
                 const rect = modalImg.getBoundingClientRect();
@@ -372,31 +376,50 @@
             }
         });
 
-        modalImg.addEventListener('mousedown', (e) => {
+        const startDrag = (clientX, clientY) => {
             if (!modalImg.classList.contains('zoomed')) return;
             isDragging = true;
-            startX = e.clientX - prevTranslateX * 2.5; 
-            startY = e.clientY - prevTranslateY * 2.5;
+            isMoving = false;
+            startX = clientX - prevTranslateX;
+            startY = clientY - prevTranslateY;
             modalImg.style.transition = "none";
-        });
+        };
 
-        window.addEventListener('mousemove', (e) => {
+        const moveDrag = (clientX, clientY) => {
             if (!isDragging) return;
-            e.preventDefault();
-            translateX = (e.clientX - startX) / 2.5;
-            translateY = (e.clientY - startY) / 2.5;
-            updateTransform(false);
-        });
+            isMoving = true;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform(false); 
+        };
 
-        const stopDragging = () => {
+        const stopDrag = () => {
             if (!isDragging) return;
             isDragging = false;
             prevTranslateX = translateX;
             prevTranslateY = translateY;
+            setTimeout(() => { isMoving = false; }, 50);
         };
 
-        window.addEventListener('mouseup', stopDragging);
-        modalImg.addEventListener('mouseleave', stopDragging);
+        modalImg.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', stopDrag);
+        modalImg.addEventListener('mouseleave', stopDrag);
+
+        modalImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchend', stopDrag);
 
         zoomBtn.addEventListener('click', () => {
             if (!modalImg.classList.contains('zoomed')) {
