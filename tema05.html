@@ -35,6 +35,7 @@
             flex-direction: column;
         }
 
+        /* --- NAVBAR SUPERIOR UNIFICADO --- */
         header {
             background-color: var(--bg-card);
             border-bottom: 2px solid var(--border-color);
@@ -90,6 +91,7 @@
             transform: translateX(-4px);
         }
 
+        /* --- CONTENEDOR DE BLOQUES --- */
         .content-container {
             flex: 1;
             max-width: 850px;
@@ -101,12 +103,14 @@
             gap: 2rem;
         }
 
+        /* --- EL CUADRO ANARANJADO PREMIUM --- */
         .cuadro-anaranjado {
             background-color: var(--bg-card);
             border: 2px solid var(--ua-naranja-border);
             border-radius: 16px;
             padding: 2rem;
             box-shadow: 0 4px 12px rgba(255, 122, 0, 0.03);
+            position: relative;
             transition: var(--transition);
         }
 
@@ -124,8 +128,16 @@
             align-items: center;
             gap: 0.5rem;
             text-transform: uppercase;
+            letter-spacing: -0.01em;
         }
 
+        .cuadro-anaranjado p {
+            color: var(--text-main);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* --- APARTADO FOTOS (GALLERY COMPACTA) --- */
         .gallery-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -139,8 +151,9 @@
             object-fit: cover;
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            cursor: pointer;
+            background-color: #f8fafc;
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .foto-problema:hover {
@@ -148,6 +161,7 @@
             border-color: var(--ua-naranja);
         }
 
+        /* --- APARTADO VIDEO (16:9) --- */
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -155,9 +169,13 @@
             background-color: #000;
             border-radius: var(--radius);
             overflow: hidden;
+            border: 1px solid var(--border-color);
             margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
         }
 
+        /* --- ESTILOS DEL MODAL INTERACTIVO CON MOVIMIENTO EN ZOOM --- */
         .image-modal {
             display: none;
             position: fixed;
@@ -171,6 +189,7 @@
             align-items: center;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow: hidden;
         }
 
         .image-modal.active {
@@ -178,11 +197,28 @@
             opacity: 1;
         }
 
-        .modal-content {
+        .modal-body {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             max-width: 90%;
             max-height: 85vh;
-            cursor: zoom-in;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            max-width: 100%;
+            max-height: 85vh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(1) translate(0px, 0px);
+            transform-origin: center center;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            object-fit: contain;
+            cursor: zoom-in;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         .modal-content.zoomed {
@@ -190,18 +226,47 @@
             cursor: grab;
         }
 
+        .modal-content.zoomed:active {
+            cursor: grabbing;
+        }
+
+        /* Controles */
         .modal-controls {
             position: absolute;
             top: 20px;
             right: 30px;
             display: flex;
+            align-items: center;
             gap: 1.5rem;
+            z-index: 10000;
         }
 
         .control-btn {
             color: #ffffff;
             font-size: 2.2rem;
+            font-weight: bold;
             cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .control-btn:hover {
+            color: var(--ua-naranja);
+            transform: scale(1.1);
+        }
+
+        .zoom-icon {
+            font-size: 1.8rem;
+        }
+
+        @media (max-width: 768px) {
+            header { height: auto; padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+            .content-container { margin: 1.5rem auto; gap: 1.5rem; }
+            .cuadro-anaranjado { padding: 1.5rem; }
+            .gallery-container { grid-template-columns: 1fr; }
+            .modal-controls { top: 15px; right: 20px; gap: 1rem; }
+            .control-btn { font-size: 1.8rem; }
+            .zoom-icon { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -218,21 +283,26 @@
     </header>
 
     <div class="content-container">
-        <section class="cuadro-anaranjado">
+        
+        <section class="cuadro-anaranjado" style="background-color: rgba(255, 122, 0, 0.02);">
             <h2>🎯 Resultado de Aprendizaje</h2>
-            <p>Al finalizar la sesión, el estudiante emplea procedimientos sobre el cálculo de perímetros...</p>
+            <p style="font-weight: 600;">Al finalizar la sesión, el estudiante emplea procedimientos sobre el cálculo de perímetros en figuras geométricas planas para la resolución de situaciones de contexto cotidiano en una hoja de cálculo, demostrando perseverancia y creatividad en el desarrollo del trabajo académico.</p>
         </section>
 
         <section class="cuadro-anaranjado">
             <h2>📝 Resumen de la Sesión</h2>
-            <p>El perímetro es la longitud total del contorno... fundamental para el diseño de interfaces (UI) y hitboxes en juegos.</p>
+            <p>En esta sesión se estudió el concepto de perímetro, definido como la longitud total del contorno que delimita una figura plana, calculable mediante la suma de sus lados o fórmulas específicas para figuras circulares. En el ámbito de la Ingeniería de Sistemas, dominar esta métrica geométrica es fundamental para estructurar el <i>Box Model</i> en el diseño de interfaces de usuario (UI), programar <i>hitboxes</i> para la detección de colisiones en el desarrollo de videojuegos, y calcular el dimensionamiento físico exacto al momento de ensamblar servidores o hardware de alto rendimiento.</p>
         </section>
 
         <section class="cuadro-anaranjado">
-            <h2>📸 Ejercicios Resueltos</h2>
+            <h2>📸 Ejercicios Resueltos a Mano</h2>
             <div class="gallery-container">
-                <img src="perimetro J.jpeg" alt="Ejercicio 1" class="foto-problema">
-                <img src="perimetro S.jpeg" alt="Ejercicio 2" class="foto-problema">
+                <img src="perimetro J.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro J2.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro S.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro S2.jpeg" alt="Problema Resuelto Parte 3" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro D.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro M.jpeg" alt="Problema Resuelto Parte 3" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
             </div>
         </section>
 
@@ -240,7 +310,7 @@
             <h2>📹 Video Explicativo</h2>
             <div class="video-wrapper">
                 <iframe 
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 14px;" 
                     src="https://www.youtube.com/embed/slkLU7aDRko" 
                     title="YouTube video player" 
                     frameborder="0" 
@@ -254,33 +324,153 @@
 
     <div class="image-modal" id="imageModal">
         <div class="modal-controls">
-            <span class="control-btn" id="zoomBtn" title="Zoom">🔍</span>
-            <span class="control-btn" id="closeModal" aria-label="Cerrar">&times;</span>
+            <span class="control-btn zoom-icon" id="zoomBtn" title="Acercar / Alejar">🔍</span>
+            <span class="control-btn" id="closeModal" title="Cerrar Escena">&times;</span>
         </div>
-        <img class="modal-content" id="modalImg" src="" alt="Ampliada">
+        <div class="modal-body" id="modalBody">
+            <img class="modal-content" id="modalImg" src="" alt="Imagen ampliada">
+        </div>
     </div>
 
     <script>
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImg');
-        const zoomBtn = document.getElementById('zoomBtn');
         const closeBtn = document.getElementById('closeModal');
+        const zoomBtn = document.getElementById('zoomBtn');
+        const imagenes = document.querySelectorAll('.foto-problema');
 
-        document.querySelectorAll('.foto-problema').forEach(img => {
+        let isDragging = false;
+        let startX, startY;
+        let translateX = 0, translateY = 0;
+        let prevTranslateX = 0, prevTranslateY = 0;
+        let isMoving = false; 
+
+        const updateTransform = (withTransition = true) => {
+            modalImg.style.transition = withTransition ? "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
+            if (modalImg.classList.contains('zoomed')) {
+                modalImg.style.transform = `scale(2.5) translate(${translateX}px, ${translateY}px)`;
+            } else {
+                modalImg.style.transform = `scale(1) translate(0px, 0px)`;
+            }
+        };
+
+        modalImg.addEventListener('click', (e) => {
+            if (isMoving) return; 
+
+            if (!modalImg.classList.contains('zoomed')) {
+                const rect = modalImg.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                modalImg.style.transformOrigin = `${x}% ${y}%`;
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        const startDrag = (clientX, clientY) => {
+            if (!modalImg.classList.contains('zoomed')) return;
+            isDragging = true;
+            isMoving = false;
+            startX = clientX - prevTranslateX;
+            startY = clientY - prevTranslateY;
+            modalImg.style.transition = "none";
+        };
+
+        const moveDrag = (clientX, clientY) => {
+            if (!isDragging) return;
+            isMoving = true;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform(false); 
+        };
+
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            prevTranslateX = translateX;
+            prevTranslateY = translateY;
+            setTimeout(() => { isMoving = false; }, 50);
+        };
+
+        modalImg.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', stopDrag);
+        modalImg.addEventListener('mouseleave', stopDrag);
+
+        modalImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchend', stopDrag);
+
+        zoomBtn.addEventListener('click', () => {
+            if (!modalImg.classList.contains('zoomed')) {
+                modalImg.style.transformOrigin = 'center center';
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        imagenes.forEach(img => {
             img.addEventListener('click', () => {
+                modalImg.style.transformOrigin = 'center center';
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
                 modal.classList.add('active');
                 modalImg.src = img.src;
+                modalImg.alt = img.alt;
+                document.body.style.overflow = 'hidden';
+                updateTransform(false);
             });
         });
 
-        const cerrar = () => {
+        const cerrarModal = () => {
             modal.classList.remove('active');
             modalImg.classList.remove('zoomed');
+            translateX = translateY = prevTranslateX = prevTranslateY = 0;
+            zoomBtn.innerText = "🔍";
+            updateTransform(false);
+            document.body.style.overflow = '';
+            setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
         };
 
-        closeBtn.addEventListener('click', cerrar);
-        zoomBtn.addEventListener('click', () => modalImg.classList.toggle('zoomed'));
-        modalImg.addEventListener('click', () => modalImg.classList.toggle('zoomed'));
+        closeBtn.addEventListener('click', cerrarModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === document.getElementById('modalBody')) {
+                cerrarModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('active') && e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
     </script>
+
 </body>
 </html>
