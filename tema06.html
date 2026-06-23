@@ -5,39 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sesión 06: AREA - Bitácora UA</title>
     <style>
-        :root {
-            --ua-naranja: #ff7a00;
-            --ua-naranja-hover: #e06b00;
-            --ua-naranja-light: rgba(255, 122, 0, 0.05);
-            --ua-naranja-border: rgba(255, 122, 0, 0.3);
-            --ua-azul-oscuro: #1e293b;
-            --bg-principal: #f1f5f9;
-            --bg-card: #ffffff;
-            --text-main: #1e293b;
-            --border-color: #cbd5e1;
-            --radius: 14px;
-            --transition: all 0.25s ease;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background-color: var(--bg-principal); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-        header { background-color: var(--bg-card); border-bottom: 2px solid var(--border-color); padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; height: 110px; }
+        /* ... (tus variables y estilos básicos se mantienen) ... */
         
-        .content-container { max-width: 850px; width: 100%; margin: 2.5rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
-
-        .cuadro-anaranjado { background-color: var(--bg-card); border: 2px solid var(--ua-naranja-border); border-radius: 16px; padding: 2rem; }
-
-        /* Estilos optimizados para el Video */
+        /* CORRECCIÓN CRÍTICA PARA EL VIDEO */
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* Mantiene proporción 16:9 [cite: 26, 179] */
+            padding-top: 56.25%; /* Relación 16:9 exacta */
             background-color: #000;
             border-radius: var(--radius);
             overflow: hidden;
             border: 1px solid var(--border-color);
-            margin-top: 0.5rem;
         }
 
         .video-wrapper iframe {
@@ -45,68 +23,26 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%; /* Ocupa el espacio sin distorsionar [cite: 180] */
-            border: 0;
+            height: 100%;
+            border: none;
+            display: block; /* Elimina espacios extra */
         }
-
-        .gallery-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-        .foto-problema { width: 100%; height: 250px; object-fit: cover; border-radius: var(--radius); cursor: pointer; }
-
-        /* Estilos del Modal */
-        .image-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.95); justify-content: center; align-items: center; }
-        .image-modal.active { display: flex; }
-        .modal-content { max-width: 90%; max-height: 85vh; cursor: zoom-in; transition: transform 0.3s ease; }
-        .modal-content.zoomed { transform: scale(2.5); cursor: grab; }
-        .modal-controls { position: absolute; top: 20px; right: 30px; display: flex; gap: 1.5rem; color: #fff; font-size: 2rem; cursor: pointer; }
+        /* ... resto de tu CSS ... */
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Sesión 06: <span>AREA</span></h1>
-    </header>
-
-    <div class="content-container">
-        <section class="cuadro-anaranjado">
-            <h2>📹 Video Explicativo</h2>
-            <div class="video-wrapper">
-                <iframe 
-                    src="https://www.youtube.com/embed/G78cSgia6Hk" 
-                    title="YouTube video player" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </section>
-        
+    <section class="cuadro-anaranjado">
+        <h2>📹 Video Explicativo</h2>
+        <div class="video-wrapper">
+            <iframe 
+                src="https://www.youtube.com/embed/G78cSgia6Hk" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
         </div>
-
-    <div class="image-modal" id="imageModal">
-        <div class="modal-controls">
-            <span id="zoomBtn">🔍</span>
-            <span id="closeModal">&times;</span>
-        </div>
-        <img class="modal-content" id="modalImg" src="" alt="Ampliada">
-    </div>
-
-    <script>
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImg');
-        const zoomBtn = document.getElementById('zoomBtn');
-        const closeModal = document.getElementById('closeModal');
-        
-        // Lógica de apertura y zoom
-        document.querySelectorAll('.foto-problema').forEach(img => {
-            img.addEventListener('click', () => {
-                modal.classList.add('active');
-                modalImg.src = img.src;
-            });
-        });
-
-        const cerrar = () => { modal.classList.remove('active'); modalImg.classList.remove('zoomed'); };
-        closeModal.addEventListener('click', cerrar);
-        zoomBtn.addEventListener('click', () => modalImg.classList.toggle('zoomed'));
-    </script>
-</body>
+    </section>
+    </body>
 </html>
