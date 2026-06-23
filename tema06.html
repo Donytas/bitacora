@@ -5,17 +5,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sesión 06: AREA - Bitácora UA</title>
     <style>
-        /* ... (tus variables y estilos básicos se mantienen) ... */
-        
-        /* CORRECCIÓN CRÍTICA PARA EL VIDEO */
+        :root {
+            --ua-naranja: #ff7a00;
+            --ua-naranja-hover: #e06b00;
+            --ua-naranja-light: rgba(255, 122, 0, 0.05);
+            --ua-naranja-border: rgba(255, 122, 0, 0.3);
+            --ua-azul-oscuro: #1e293b;
+            --bg-principal: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --radius: 14px;
+            --transition: all 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVBAR SUPERIOR UNIFICADO --- */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            padding: 0 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 110px;
+            flex-shrink: 0;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .logo-autonoma {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-title h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--ua-azul-oscuro);
+            line-height: 1.2;
+        }
+
+        .header-title h1 span {
+            color: var(--ua-naranja);
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--ua-naranja-light);
+            border: 1px solid var(--ua-naranja);
+            color: var(--ua-naranja-hover);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-back:hover {
+            background-color: var(--ua-naranja);
+            color: #ffffff;
+            transform: translateX(-4px);
+        }
+
+        /* --- CONTENEDOR DE BLOQUES --- */
+        .content-container {
+            flex: 1;
+            max-width: 850px;
+            width: 100%;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* --- EL CUADRO ANARANJADO PREMIUM --- */
+        .cuadro-anaranjado {
+            background-color: var(--bg-card);
+            border: 2px solid var(--ua-naranja-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.03);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .cuadro-anaranjado:hover {
+            border-color: var(--ua-naranja);
+            box-shadow: 0 6px 16px rgba(255, 122, 0, 0.08);
+        }
+
+        .cuadro-anaranjado h2 {
+            font-size: 1.3rem;
+            color: var(--ua-naranja-hover);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+        }
+
+        .cuadro-anaranjado p {
+            color: var(--text-main);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* --- APARTADO FOTOS (GALLERY COMPACTA) --- */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .foto-problema {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .foto-problema:hover {
+            transform: scale(1.02);
+            border-color: var(--ua-naranja);
+        }
+
+        /* --- APARTADO VIDEO (16:9 CORREGIDO) --- */
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* Relación 16:9 exacta */
+            padding-top: 56.25%; /* Relación de aspecto 16:9 perfecta */
             background-color: #000;
             border-radius: var(--radius);
             overflow: hidden;
             border: 1px solid var(--border-color);
+            margin-top: 0.5rem;
         }
 
         .video-wrapper iframe {
@@ -23,26 +178,305 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            border: none;
-            display: block; /* Elimina espacios extra */
+            height: 100%; /* Ahora sí obligamos al iFrame a llenar todo el contenedor */
+            border: 0;
         }
-        /* ... resto de tu CSS ... */
+
+        /* --- ESTILOS DEL MODAL INTERACTIVO CON MOVIMIENTO EN ZOOM --- */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 41, 59, 0.95);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .image-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-body {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            max-width: 100%;
+            max-height: 85vh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(1) translate(0px, 0px);
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            object-fit: contain;
+            cursor: zoom-in;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .modal-content.zoomed {
+            transform: scale(2.5);
+            cursor: grab;
+        }
+
+        .modal-content.zoomed:active {
+            cursor: grabbing;
+        }
+
+        /* Controles */
+        .modal-controls {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 10000;
+        }
+
+        .control-btn {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .control-btn:hover {
+            color: var(--ua-naranja);
+            transform: scale(1.1);
+        }
+
+        .zoom-icon {
+            font-size: 1.8rem;
+        }
+
+        @media (max-width: 768px) {
+            header { height: auto; padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+            .content-container { margin: 1.5rem auto; gap: 1.5rem; }
+            .cuadro-anaranjado { padding: 1.5rem; }
+            .gallery-container { grid-template-columns: 1fr; }
+            .modal-controls { top: 15px; right: 20px; gap: 1rem; }
+            .control-btn { font-size: 1.8rem; }
+            .zoom-icon { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
-    <section class="cuadro-anaranjado">
-        <h2>📹 Video Explicativo</h2>
-        <div class="video-wrapper">
-            <iframe 
-                src="https://www.youtube.com/embed/G78cSgia6Hk" 
-                title="YouTube video player" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen>
-            </iframe>
+
+    <header>
+        <div class="logo-box">
+            <img src="Universidad-Autonoma-del-Peru-UA.jpg" alt="Logo UA" class="logo-autonoma">
+            <div class="header-title">
+                <h1>Sesión 06: <span>AREA</span></h1>
+            </div>
         </div>
-    </section>
-    </body>
+        <a href="index.html" class="btn-back">⬅ Volver al Índice</a>
+    </header>
+
+    <div class="content-container">
+        
+        <section class="cuadro-anaranjado" style="background-color: rgba(255, 122, 0, 0.02);">
+            <h2>🎯 Resultado de Aprendizaje</h2>
+            <p style="font-weight: 600;">Al finalizar la sesión, el estudiante aplica procedimientos de áreas en situaciones reales, mediante una hoja de cálculo desarrollada a partir de ejercicios propuestos en una guía práctica, con perseverancia y creatividad en el trabajo académico.</p>
+        </section>
+
+        <section class="cuadro-anaranjado">
+            <h2>📝 Resumen de la Sesión</h2>
+            <p>En esta sesión se estudió el área, definida como la extensión de una superficie bidimensional dentro de un contorno. En Ingeniería de Sistemas, esta métrica es vital para optimizar la distribución de contenedores en interfaces (UI), calcular superficies de renderizado gráfico y dimensionar la disipación térmica en hardware de alto rendimiento.</p>
+        </section>
+
+        <section class="cuadro-anaranjado">
+            <h2>📸 Ejercicios Resueltos a Mano</h2>
+            <div class="gallery-container">
+                <img src="perimetro J.jpeg" alt="Problema Resuelto Parte 1" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro J2.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro S.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro S2.jpeg" alt="Problema Resuelto Parte 3" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro D.jpeg" alt="Problema Resuelto Parte 2" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+                <img src="perimetro M.jpeg" alt="Problema Resuelto Parte 3" class="foto-problema" onerror="this.src='https://placehold.co/400x500/ff7a00/ffffff?text=Sube+tu+Foto+Aquí'">
+            </div>
+        </section>
+
+        <section class="cuadro-anaranjado">
+            <h2>📹 Video Explicativo</h2>
+            <div class="video-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/G78cSgia6Hk" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+    </div>
+
+    <div class="image-modal" id="imageModal">
+        <div class="modal-controls">
+            <span class="control-btn zoom-icon" id="zoomBtn" title="Acercar / Alejar">🔍</span>
+            <span class="control-btn" id="closeModal" title="Cerrar Escena">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <img class="modal-content" id="modalImg" src="" alt="Imagen ampliada">
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeBtn = document.getElementById('closeModal');
+        const zoomBtn = document.getElementById('zoomBtn');
+        const imagenes = document.querySelectorAll('.foto-problema');
+
+        let isDragging = false;
+        let startX, startY;
+        let translateX = 0, translateY = 0;
+        let prevTranslateX = 0, prevTranslateY = 0;
+        let isMoving = false; 
+
+        const updateTransform = (withTransition = true) => {
+            modalImg.style.transition = withTransition ? "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
+            if (modalImg.classList.contains('zoomed')) {
+                modalImg.style.transform = `scale(2.5) translate(${translateX}px, ${translateY}px)`;
+            } else {
+                modalImg.style.transform = `scale(1) translate(0px, 0px)`;
+            }
+        };
+
+        modalImg.addEventListener('click', (e) => {
+            if (isMoving) return; 
+
+            if (!modalImg.classList.contains('zoomed')) {
+                const rect = modalImg.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                modalImg.style.transformOrigin = `${x}% ${y}%`;
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        const startDrag = (clientX, clientY) => {
+            if (!modalImg.classList.contains('zoomed')) return;
+            isDragging = true;
+            isMoving = false;
+            startX = clientX - prevTranslateX;
+            startY = clientY - prevTranslateY;
+            modalImg.style.transition = "none";
+        };
+
+        const moveDrag = (clientX, clientY) => {
+            if (!isDragging) return;
+            isMoving = true;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform(false); 
+        };
+
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            prevTranslateX = translateX;
+            prevTranslateY = translateY;
+            setTimeout(() => { isMoving = false; }, 50);
+        };
+
+        modalImg.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', stopDrag);
+        modalImg.addEventListener('mouseleave', stopDrag);
+
+        modalImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchend', stopDrag);
+
+        zoomBtn.addEventListener('click', () => {
+            if (!modalImg.classList.contains('zoomed')) {
+                modalImg.style.transformOrigin = 'center center';
+                modalImg.classList.add('zoomed');
+                zoomBtn.innerText = "📉";
+                updateTransform(true);
+            } else {
+                modalImg.classList.remove('zoomed');
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                zoomBtn.innerText = "🔍";
+                updateTransform(true);
+                setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+            }
+        });
+
+        imagenes.forEach(img => {
+            img.addEventListener('click', () => {
+                modalImg.style.transformOrigin = 'center center';
+                translateX = translateY = prevTranslateX = prevTranslateY = 0;
+                modal.classList.add('active');
+                modalImg.src = img.src;
+                modalImg.alt = img.alt;
+                document.body.style.overflow = 'hidden';
+                updateTransform(false);
+            });
+        });
+
+        const cerrarModal = () => {
+            modal.classList.remove('active');
+            modalImg.classList.remove('zoomed');
+            translateX = translateY = prevTranslateX = prevTranslateY = 0;
+            zoomBtn.innerText = "🔍";
+            updateTransform(false);
+            document.body.style.overflow = '';
+            setTimeout(() => { modalImg.style.transformOrigin = 'center center'; }, 300);
+        };
+
+        closeBtn.addEventListener('click', cerrarModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === document.getElementById('modalBody')) {
+                cerrarModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('active') && e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+    </script>
+
+</body>
 </html>
